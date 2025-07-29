@@ -132,6 +132,65 @@
     transform: rotate(360deg);
   }
 }
+/*
+file uploads
+*/
+.file-drop-container {
+  height: calc(100% - 1.0rem);
+  width: calc(100% - 16rem);
+  margin: auto;
+  margin-left: 0rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border: 2px solid #cccccc;
+  background-color: white;
+}
+.model-form-two {
+  grid-column-start: 1;
+  grid-column-end: -1;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  display: flex;
+  flex-direction: column;
+  background-color: red;
+  outline: 1px solid red;
+
+}
+.model-upload-container {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: -1;
+  width: calc(100% - 2.0rem);
+  height: 100%;
+  display: flex;
+  background-color: green;
+  margin: auto;
+  margin-top: 1.0rem;
+}
+.model-upload-list {
+  width: 16rem;
+  height: calc(100% - 1rem);
+  margin: auto;
+  background-color: lightgray;
+  display: flex;
+  flex-direction: column;
+}
+
+.model-file-card {
+  width: 100%;
+  height: 1.5rem;
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
 .subform-actions {
   grid-column-start: 1;
   grid-column-end: -1;
@@ -249,12 +308,11 @@
   grid-column-start: 1;
   grid-column-end: -1;
   height: 100%;
-  max-height: 16rem;
   width: 100%;
   display: grid;
   grid-template-columns: auto;
   grid-template-rows: 1.0rem auto;
-  outline: 2px solid green;
+  background-color: lightblue;
 }
 .lod-header {
   grid-row-start: 1;
@@ -340,7 +398,7 @@
   outline: 2px solid red;
   margin: auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto 28rem;
   grid-template-rows: 4rem auto;
 }
 .model-manager-header h1 {
@@ -431,14 +489,14 @@
 .form-lod-container {
   width: calc(100% - 2.0rem);
   height: 100%;
-  max-height: 20rem;
   display: grid;
   grid-template-columns: auto;
-  grid-template-rows: 16rem 4rem;
-  outline: 1px solid blue;
+  grid-template-rows: auto 4rem;
+  background-color: green;
   margin: auto;
   margin-top: 1.0rem;
 }
+
 .model-form-container {
   grid-column-start: 1;
   grid-column-end: 2;
@@ -451,14 +509,7 @@
   grid-template-rows: 3rem auto 5rem;
   background-color: lightgray;
 }
-.model-form-two {
-  grid-column-start: 1;
-  grid-column-end: -1;
-  grid-row-start: 2;
-  grid-row-end: 3;
-  outline: 1px solid red;
 
-}
 .model-form-input {
   grid-column-start: 1;
   grid-column-end: -1;
@@ -515,15 +566,14 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  row-gap: 1rem;
+  row-gap: 0.5rem;
   column-gap: 1rem;
   outline: 2px solid black;
   overflow-y: scroll;
 }
 .model-card {
-  width: 20rem;
-  height: 20rem;
-  border-radius: 1rem;
+  width: 100%;
+  height: 8rem;
   outline: 2px solid gray;
   display: grid;
   grid-template-columns: auto;
