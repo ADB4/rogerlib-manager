@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useEffect, useState } from 'react';
 import { getData } from '../component/managerComponent';
+import { useFormDataContext } from './managerComponent';
 import type { 
     Model,
     ModelSetType, 
@@ -17,26 +18,10 @@ import type {
 
 const ModelIntakeComponent: React.FC<{
     model?: Model;
-    onSubmit: (data: ModelFormProps) => void;
+    onSubmit: (tab: number) => void;
 }> = ({model, onSubmit}) => {
-    const [formData, setFormData] = useState<ModelFormProps>(() => {
-        return getData('formData') || {
-        itemcode: '',
-        itemname: '',
-        category: '',
-        subcategory: '',
-        material: '',
-        models: [],
-        zoom: 75,
-        texturemap: {},
-        texturesets: [],
-        colors: [],
-        colormap: {},
-        lodcount: [],
-        description: '',
-        creatornote: '',
-        version: ''
-    }});
+    const { formData, dispatch } = useFormDataContext();
+
     const [errors, setErrors] = useState<StringDictionary>({});
 
     const validateForm = (): boolean => {
@@ -69,16 +54,17 @@ const ModelIntakeComponent: React.FC<{
         if (formData.description === '') {
             newErrors.description = 'DESCRIPTION REQUIRED'
         }
+        setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     }
-    const handleChange = (data: Partial<ModelFormProps>) => {
-        setFormData(prev => ({...prev, ...data}));
+    const handleChange = (field: keyof ModelFormProps, value: any) => {
+        dispatch({ type: 'SET_FIELD', field, value});
     }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (validateForm()) {
-            onSubmit(formData);
+            onSubmit(1);
         }
     }
     useEffect(() => {
@@ -95,14 +81,14 @@ const ModelIntakeComponent: React.FC<{
                         <div className="subform-input flex">
                             <input 
                                 id="input-itemcode" 
-                                onChange={(e) => {handleChange({'itemcode': e.target.value})}}
+                                onChange={(e) => {handleChange('itemcode', e.target.value)}}
                                 value={formData.itemcode}
                                 type="text" 
                                 placeholder="ITEMCODE"
                             />
                             <input 
                                 id="input-itemname" 
-                                onChange={(e) => {handleChange({'itemname': e.target.value})}}
+                                onChange={(e) => {handleChange('itemname', e.target.value)}}
                                 value={formData.itemname}
                                 type="text" 
                                 placeholder="ITEMNAME"
@@ -116,14 +102,14 @@ const ModelIntakeComponent: React.FC<{
                         <div className="subform-input flex">
                             <input 
                                 id="input-itemcode" 
-                                onChange={(e) => {handleChange({'category': e.target.value})}}
+                                onChange={(e) => {handleChange('category', e.target.value)}}
                                 value={formData.category}
                                 type="text" 
                                 placeholder="CATEGORY"
                             />
                             <input 
                                 id="input-itemname" 
-                                onChange={(e) => {handleChange({'subcategory': e.target.value})}}
+                                onChange={(e) => {handleChange('subcategory', e.target.value)}}
                                 value={formData.subcategory}
                                 type="text" 
                                 placeholder="SUBCATEGORY"
@@ -140,7 +126,7 @@ const ModelIntakeComponent: React.FC<{
                         </div>
                         <div className="subform-input">
                             <input 
-                                onChange={(e) => {handleChange({'material': e.target.value})}}
+                                onChange={(e) => {handleChange('material', e.target.value)}}
                                 value={formData.material}
                                 type="text" 
                                 placeholder="MATERIAL"
@@ -157,7 +143,7 @@ const ModelIntakeComponent: React.FC<{
                         <div className="subform-input">
                             <textarea 
                                 className="subform-textarea"
-                                onChange={(e) => {handleChange({'description': e.target.value})}}
+                                onChange={(e) => {handleChange('description', e.target.value)}}
                                 value={formData.description}
                                 rows={4}
                                 maxLength={420}
@@ -172,7 +158,7 @@ const ModelIntakeComponent: React.FC<{
                         <div className="subform-input">
                             <textarea 
                                 className="subform-textarea"
-                                onChange={(e) => {handleChange({'creatornote': e.target.value})}}
+                                onChange={(e) => {handleChange('creatornote', e.target.value)}}
                                 value={formData.creatornote}
                                 rows={4}
                                 maxLength={420}
@@ -189,25 +175,26 @@ const ModelIntakeComponent: React.FC<{
 }
 const FormLODSComponent: React.FC<{
     data: number[];
-    onSave: (data: Partial<ModelFormProps>) => void;
+    onSave: (field: keyof ModelFormProps, value: any) => void;
 }> = ({data, onSave}) => {
     const [lods, setLods] = useState<number[]>(data);
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
-    const [formData, setFormData] = useState<NumberDictionary>({
+    const { formData, dispatch } = useFormDataContext();
+    const [input, setInput] = useState<NumberDictionary>({
         'polycount': 0
     });
     const [errors, setErrors] = useState<StringDictionary>({
     });
     const validateForm = (): boolean => {
         const newErrors: StringDictionary = {};
-        if (formData.polycount <= 0) {
+        if (input.polycount <= 0) {
             newErrors.polycount = 'VALUE CANNOT BE ZERO OR NEGATIVE.';
         }
-        if (formData.polycount === undefined) {
+        if (input.polycount === undefined) {
             newErrors.polycount = 'VALUE REQUIRED.';
         }
-        if (Number.isNaN(formData.polycount)) {
+        if (Number.isNaN(input.polycount)) {
             newErrors.polycount = 'VALUE NOT VALID.'
         }
         setErrors(newErrors)
@@ -219,13 +206,15 @@ const FormLODSComponent: React.FC<{
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (validateForm()) {
-            const newArr = [...lods, formData.polycount];
+            const newArr = [...lods, input.polycount];
             newArr.sort((a, b) => b - a);
             setLods(newArr)
-            setFormData({
+            setInput({
                 'polycount': 0,
             })
-            onSave({'lodcount': newArr});
+            const modelsArr: ModelsType[] = Array.from({ length: newArr.length }, (_, index) => []); 
+            dispatch({ type: 'SET_FIELD', field: 'models', value: modelsArr })
+            dispatch({ type: 'SET_FIELD', field: 'lodcount', value: newArr })
             setIsEditing(false);
         }
 
@@ -233,10 +222,10 @@ const FormLODSComponent: React.FC<{
     const removeElement = (value: number) => {
         const newArr = lods.filter(lod => lod !== value);
         setLods(newArr);
-        onSave({'lodcount': newArr});
+        dispatch({ type: 'SET_FIELD', field: 'lodcount', value: newArr})
     }
     const handleChange = (key: string) => {
-        setFormData(prev => ({...prev, polycount: Number(key)}))
+        setInput(prev => ({...prev, polycount: Number(key)}))
     }
     return (
         <div className="subform-container lods">
@@ -268,7 +257,7 @@ const FormLODSComponent: React.FC<{
                     <input type="text" 
                             onChange={(e) => {handleChange(e.target.value)}} 
                             placeholder="POLYCOUNT" 
-                            value={formData.polycount}/>
+                            value={input.polycount}/>
                     <button onClick={handleSubmit}>ADD</button>
                 </div>
                 )}
@@ -283,7 +272,7 @@ const FormLODSComponent: React.FC<{
 const FormColorComponent: React.FC<{
     data?: string[];
     map?: StringDictionary;
-    onSave: (data: Partial<ModelFormProps>) => void;
+    onSave: (field: keyof ModelFormProps, value: any) => void;
 }> = ({data, map, onSave}) => {
     const [colors, setColors] = useState<string[]>(data || []);
     const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -321,10 +310,8 @@ const FormColorComponent: React.FC<{
             }
             setColors(newArr);
             setColorsMap(newMap);
-            onSave({
-                'colormap': newMap,
-                'colors': newArr
-            });
+            onSave('colormap', newMap);
+            onSave('colors', newArr);
             setFormData(prev => ({...prev, 'colorcode': '', 'colorname': ''}));
             setIsEditing(false)
         }
