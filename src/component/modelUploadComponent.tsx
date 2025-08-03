@@ -3,7 +3,7 @@ import React, { useState, useEffect, useLayoutEffect, useRef, useContext } from 
 import type { ModelFormProps, Model } from '../component/managerComponent';
 import { useFormDataContext } from '../component/managerComponent';
 import FileDropComponent from '../component/fileDropComponent';
-import type { ModelSetType, ModelsType } from '../component/managerComponent';
+import type { ModelSetType, ModelsType, StringDictionary } from '../component/managerComponent';
 
 
 const ModelUploadComponent: React.FC<{
@@ -15,14 +15,18 @@ const ModelUploadComponent: React.FC<{
     const [uploadedFiles, setUploadedFiles] = useState<ModelsType[]>(formData.models || {});
     const [currentFiles, setCurrentFiles] = useState<File[]>(formData.models[0] || []);
     const [activeLOD, setActiveLOD] = useState<number>(0);
+    const [errors, setErrors] = useState<StringDictionary>({});
 
-    useEffect(() => {
-        console.log(formData);
-    },[activeLOD]);
     useEffect(() => {
         dispatch({ type: 'UPDATE_MODELS', models: uploadedFiles })
     },[uploadedFiles]);
 
+
+    const validateForm = (): boolean => {
+        const newErrors: StringDictionary = {};
+
+        return Object.keys(newErrors).length === 0;
+    }
     const handleSetActiveLOD = (index: number) => {
         setCurrentFiles(uploadedFiles[index])
         setActiveLOD(index);
@@ -44,6 +48,12 @@ const ModelUploadComponent: React.FC<{
         console.log(newGrid);
         setUploadedFiles(newGrid);
         setCurrentFiles(newRow);
+    }
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (validateForm()) {
+            onSubmit(2);
+        }
     }
     return (
         <>
@@ -86,6 +96,11 @@ const ModelUploadComponent: React.FC<{
                     ))}
                 </div>
             </div>
+        </div>
+        <div className="model-form-actions">
+            <button onClick={handleSubmit}>NEXT</button>
+            <button onClick={() => {onSubmit(0)}}>BACK</button>
+
         </div>
         </>
     )

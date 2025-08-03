@@ -76,7 +76,7 @@ const TextureUploadComponent: React.FC<{
         <div className="model-form-two">
             <div className="form-lod-tabs">
                 {Array.from({length: data.lodcount.length}, (_, index) => (
-                    <>
+                    <div key={index}>
                     {activeLOD === index && (
                     <button 
                         className="form-lod-tab active"
@@ -93,7 +93,7 @@ const TextureUploadComponent: React.FC<{
                         <p>LOD{index}</p>
                     </button>
                     )}
-                    </>
+                    </div>
                 ))}
             </div>
             <div className="form-lod-container">

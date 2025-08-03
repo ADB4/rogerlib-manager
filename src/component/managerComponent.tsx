@@ -153,12 +153,8 @@ const ModelFormComponent: React.FC<{
     const [formData, dispatch] = useReducer(formDataReducer, getInitialFormData())
     const [tab, setTab] = useState<Number>(0);
 
-
     useEffect(() => {
-        localStorage.clear();
-    },[]);
-    useEffect(() => {
-        //localStorage.setItem('formData', JSON.stringify(formData));
+        localStorage.setItem('formData', JSON.stringify(formData));
     },[formData]);
 
     const handleSave = (data: ModelFormProps) => {
@@ -173,10 +169,13 @@ const ModelFormComponent: React.FC<{
     const clearForm = () => {
         dispatch({ type: 'RESET_FORM' })
     }
-    const handleSubmitModels = (data: ModelsType[]) => {
+    const handleLoadTextureUpload = () => {
 
     }
     const handleSetTab = (tab: number) => {
+        if (tab === 2) {
+
+        }
         setTab(tab);
     }
     return (
@@ -249,6 +248,11 @@ const ModelManagerComponent: React.FC = () => {
     const handleSubmit = (data: ModelFormProps) => {
         console.log("todo");
     }
+
+    const toggleActiveForm = () => {
+        setActiveForm(!activeForm);
+    }
+
     useEffect(() => {
         let ignoreStaleRequest = false;
         const url = "http://192.168.4.80:5000/api/v1/items/all/";
@@ -301,13 +305,27 @@ const ModelManagerComponent: React.FC = () => {
             <div className="model-manager-header">
                 <h1>RML Manager</h1>
             </div>
-            <ModelFormComponent onSave={handleSubmit} />
-            <div className="model-library">
-            {models.map((model) => (
-                <ModelCardComponent key={model.itemcode} data={model} />
-            ))}
+            {activeForm && (
+            <>
+            <div className="model-manager-actions">
+                <button className="red-button" onClick={() => {toggleActiveForm()}}>EXIT</button>
+                <button>CLEAR FORM</button>
             </div>
-
+            <ModelFormComponent onSave={handleSubmit} />
+            </>
+            )}
+            {!activeForm && (
+            <>
+                <div className="model-manager-actions">
+                    <button onClick={() => {toggleActiveForm()}}>ADD MODEL</button>
+                </div>
+                <div className="model-library">
+                {models.map((model) => (
+                    <ModelCardComponent key={model.itemcode} data={model} />
+                ))}
+                </div>
+            </>
+            )}
         </div>
     )
 }
