@@ -206,18 +206,13 @@ const ModelFormComponent: React.FC<{
             </div>
             {tab === 0 && (
                 <ModelIntakeComponent 
-                    model={model} 
-                    onSubmit={handleSetTab}/>
+                    model={model} />
             )}
             {tab === 1 && (
-                <ModelUploadComponent
-                    onSubmit={handleSetTab}
-                />
+                <ModelUploadComponent />
             )}
             {tab === 2 && (
-                <TextureUploadComponent
-                    data={formData}
-                />
+                <TextureUploadComponent />
             )}
             <div className="model-form-actions">
                 <button onClick={() => {handleFormAction('next')}}>NEXT</button>

@@ -18,8 +18,7 @@ import type {
 
 const ModelIntakeComponent: React.FC<{
     model?: Model;
-    onSubmit: (tab: number) => void;
-}> = ({model, onSubmit}) => {
+}> = ({model}) => {
     const { formData, dispatch } = useFormDataContext();
 
     const [errors, setErrors] = useState<StringDictionary>({});
@@ -60,16 +59,6 @@ const ModelIntakeComponent: React.FC<{
     const handleChange = (field: keyof ModelFormProps, value: any) => {
         dispatch({ type: 'SET_FIELD', field, value});
     }
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (validateForm()) {
-            onSubmit(1);
-        }
-    }
-    useEffect(() => {
-        localStorage.setItem('formData', JSON.stringify(formData));
-    },[formData]);
     return (
         <>
             <div className="model-form-input">

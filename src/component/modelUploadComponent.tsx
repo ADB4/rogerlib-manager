@@ -7,9 +7,8 @@ import type { ModelSetType, ModelsType, StringDictionary } from '../component/ma
 
 
 const ModelUploadComponent: React.FC<{
-    onSubmit: (tab: number) => void;
     model?: Model;
-}> = ({ onSubmit, model }) => {
+}> = ({ model }) => {
     const { formData, dispatch } = useFormDataContext();
 
     const [uploadedFiles, setUploadedFiles] = useState<ModelsType[]>(formData.models || {});
@@ -48,12 +47,6 @@ const ModelUploadComponent: React.FC<{
         console.log(newGrid);
         setUploadedFiles(newGrid);
         setCurrentFiles(newRow);
-    }
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (validateForm()) {
-            onSubmit(2);
-        }
     }
     return (
         <>

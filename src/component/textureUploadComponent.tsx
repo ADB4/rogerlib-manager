@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 
 import type { ModelFormProps, Model } from '../component/managerComponent';
-
+import { useFormDataContext } from '../component/managerComponent';
 import FileDropComponent from '../component/fileDropComponent';
 
 import type { 
@@ -15,9 +15,9 @@ import type {
  } from '../component/managerComponent';
 
 const TextureUploadComponent: React.FC<{
-    data: ModelFormProps;
     model?: Model;
-}> = ({ data, model }) => {
+}> = ({ model }) => {
+    const { formData, dispatch } = useFormDataContext();
     const [activeLOD, setActiveLOD] = useState<Number>(0);
 
     const [textureSets, setTextureSets] = useState<TextureSetType>({});
@@ -75,7 +75,7 @@ const TextureUploadComponent: React.FC<{
     return (
         <div className="model-form-two">
             <div className="form-lod-tabs">
-                {Array.from({length: data.lodcount.length}, (_, index) => (
+                {Array.from({length: formData.lodcount.length}, (_, index) => (
                     <div key={index}>
                     {activeLOD === index && (
                     <button 
