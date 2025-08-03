@@ -97,11 +97,6 @@ const ModelUploadComponent: React.FC<{
                 </div>
             </div>
         </div>
-        <div className="model-form-actions">
-            <button onClick={handleSubmit}>NEXT</button>
-            <button onClick={() => {onSubmit(0)}}>BACK</button>
-
-        </div>
         </>
     )
 }

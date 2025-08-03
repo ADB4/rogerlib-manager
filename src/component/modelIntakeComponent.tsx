@@ -167,9 +167,6 @@ const ModelIntakeComponent: React.FC<{
                     </div>
                 </div>
             </div>
-            <div className="model-form-actions">
-                <button onClick={handleSubmit}>NEXT</button>
-            </div>
         </>
     )
 }

@@ -169,13 +169,14 @@ const ModelFormComponent: React.FC<{
     const clearForm = () => {
         dispatch({ type: 'RESET_FORM' })
     }
-    const handleLoadTextureUpload = () => {
-
+    const handleFormAction = (action: string) => {
+        if (action === 'next') {
+            handleSetTab(Number(tab) + 1);
+        } else if (action === 'back') {
+            handleSetTab(Number(tab) - 1);
+        }
     }
     const handleSetTab = (tab: number) => {
-        if (tab === 2) {
-
-        }
         setTab(tab);
     }
     return (
@@ -218,6 +219,15 @@ const ModelFormComponent: React.FC<{
                     data={formData}
                 />
             )}
+            <div className="model-form-actions">
+                <button onClick={() => {handleFormAction('next')}}>NEXT</button>
+                {tab == 0 && (
+                    <button disabled>BACK</button>
+                )}
+                {tab != 0 && (
+                    <button  onClick={() => {handleFormAction('back')}}>BACK</button>
+                )}
+            </div>
         </div>
     </FormDataContext.Provider>
     )
