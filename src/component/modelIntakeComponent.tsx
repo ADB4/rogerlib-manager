@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react';
 import { getData } from '../component/managerComponent';
 import { useFormDataContext } from './managerComponent';
 import type { 
+    ColorType,
     Model,
     ModelSetType, 
     ModelsType, 
     TextureSetType, 
     TextureType, 
+    Dict,
     StringDictionary,
     NumberDictionary,
     LODData,
@@ -255,17 +257,20 @@ const FormLODSComponent: React.FC<{
         </div>
     )
 }
+
+
 const FormColorComponent: React.FC<{
-    data?: string[];
+    data?: ColorType[];
     map?: StringDictionary;
     onSave: (field: keyof ModelFormProps, value: any) => void;
 }> = ({data, map, onSave}) => {
-    const [colors, setColors] = useState<string[]>(data || []);
+    const [colors, setColors] = useState<ColorType[]>(data || []);
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [colorsMap, setColorsMap] = useState<StringDictionary>(map || {});
-    const [formData, setFormData] = useState<StringDictionary>({
+    const [formData, setFormData] = useState<ColorType>({
         'colorcode': '',
-        'colorname': ''
+        'colorname': '',
+        'sharedmaps': false
     });
     const [errors, setErrors] = useState<StringDictionary>({});
 
@@ -290,7 +295,7 @@ const FormColorComponent: React.FC<{
     const handleAddColor = (e: React.FormEvent) => {
         e.preventDefault();
         if (validateForm()) {
-            const newArr = [...colors, formData.colorcode];
+            const newArr = [...colors, formData];
             const newMap = {
                 ...colorsMap, [formData.colorcode]: formData.colorname
             }
@@ -298,16 +303,17 @@ const FormColorComponent: React.FC<{
             setColorsMap(newMap);
             onSave('colormap', newMap);
             onSave('colors', newArr);
-            setFormData(prev => ({...prev, 'colorcode': '', 'colorname': ''}));
+            setFormData(prev => ({...prev, 'colorcode': '', 'colorname': '', 'sharedmaps': false}));
             setIsEditing(false)
+            console.log(colorsMap)
         }
 
     }
-    const handleChange = (field: string, value: string) => {
+    const handleChange = (field: string, value: string | boolean) => {
         setFormData(prev => ({...prev, [field]: value}));
     }
     const removeElement = (key: string) => {
-        setColors(prev => prev.filter(color => color !== key));
+        setColors(prev => prev.filter(color => color.colorcode !== key));
     }
     return (
         <div className="subform-container color">
@@ -323,10 +329,10 @@ const FormColorComponent: React.FC<{
                 )}
                 {colors.map((color) => (
                     <div
-                        key={color} 
+                        key={color.colorcode} 
                         className="input-card">
-                        <p>{color}: "{colorsMap[color]}"</p>
-                        <button onClick={() => {removeElement(color)}}>
+                        <p>{color.colorcode}: "{colorsMap[color.colorcode]}"</p>
+                        <button onClick={() => {removeElement(color.colorcode)}}>
                             X
                         </button>
                     </div>
@@ -336,11 +342,15 @@ const FormColorComponent: React.FC<{
                         <input type="text" 
                             onChange={(e) => {handleChange('colorcode', e.target.value)}}
                             placeholder="COLORCODE"
-                            value={formData.colorcode} />
+                            value={formData.colorcode.toString()} />
                         <input type="text" 
                                 onChange={(e) => {handleChange('colorname', e.target.value)}} 
                                 placeholder="COLORNAME" 
-                                value={formData.colorname}/>
+                                value={formData.colorname.toString()}/>
+                        <input type="checkbox"
+                               checked={formData.sharedmaps}
+                               onChange={(e) => {handleChange('sharedmaps', e.target.value)}}
+                        />
                         <button onClick={handleAddColor}>SAVE</button>
                     </div>
                 )}

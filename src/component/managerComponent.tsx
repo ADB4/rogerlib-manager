@@ -31,6 +31,9 @@ export interface ModelSetType {
 
 export type ValueOf<T> = T[keyof T];
 
+export interface Dict {
+    [key: string]: string | number | boolean;
+}
 export interface StringDictionary {
     [key: string]: string;
 }
@@ -63,7 +66,7 @@ export interface ModelFormProps {
     zoom: number;
     texturemap: NumberDictionary;
     texturesets: TextureSetType[];
-    colors: string[];
+    colors: ColorType[];
     colormap: StringDictionary;
     lodcount: number[];
     description: string;
@@ -81,6 +84,12 @@ export interface Model extends ModelFormProps {
     obfuscatedpath: string;
     download: string;
     preview: string;
+}
+
+export interface ColorType {
+    colorcode: string;
+    colorname: string;
+    sharedmaps: boolean;
 }
 
 interface ModelFormData {
@@ -260,7 +269,7 @@ const ModelManagerComponent: React.FC = () => {
 
     useEffect(() => {
         let ignoreStaleRequest = false;
-        const url = "http://192.168.4.80:5000/api/v1/items/all/";
+        const url = "http://10.99.147.83:5000/api/v1/items/all/";
         fetch(url, { credentials: "same-origin"})
             .then((response) => {
                 if (!response.ok) throw Error(response.statusText);

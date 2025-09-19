@@ -1,5 +1,5 @@
 import { createContext, useReducer, useContext, ReactNode } from 'react';
-import type { ModelFormProps, Model,  ModelSetType, ModelsType, ValueOf, TextureType } from '../component/managerComponent';
+import type { ColorType, ModelFormProps, Model,  ModelSetType, ModelsType, ValueOf, TextureType } from '../component/managerComponent';
 import FileDropComponent from '../component/fileDropComponent';
 import { getData } from '../component/managerComponent';
 const initialFormData: ModelFormProps = {
@@ -29,7 +29,7 @@ export type FormDataAction =
   | { type: 'REMOVE_TEXTURE_SET'; key: string }
   | { type: 'UPDATE_TEXTURE_MAP'; key: string; value: number }
   | { type: 'UPDATE_COLOR_MAP'; key: string; value: string }
-  | { type: 'ADD_COLOR'; color: string }
+  | { type: 'ADD_COLOR'; color: ColorType }
   | { type: 'REMOVE_COLOR'; color: string };
 
   // Reducer function
@@ -95,7 +95,7 @@ function formDataReducer(state: ModelFormProps, action: FormDataAction): ModelFo
     case 'REMOVE_COLOR':
       return {
         ...state,
-        colors: state.colors.filter(color => color !== action.color)
+        colors: state.colors.filter(color => color.colorcode !== action.color)
       };
 
     default:
@@ -146,7 +146,6 @@ export function useFormData() {
 // Helper functions for common operations
 export const useFormDataHelpers = () => {
   const { dispatch } = useFormData();
-
   return {
     setField: (field: keyof ModelFormProps, value: any) => 
       dispatch({ type: 'SET_FIELD', field, value }),
@@ -172,7 +171,7 @@ export const useFormDataHelpers = () => {
     updateColorMap: (key: string, value: string) => 
       dispatch({ type: 'UPDATE_COLOR_MAP', key, value }),
     
-    addColor: (color: string) => 
+    addColor: (color: ColorType) => 
       dispatch({ type: 'ADD_COLOR', color }),
     
     removeColor: (color: string) => 

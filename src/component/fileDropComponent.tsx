@@ -84,10 +84,10 @@ const FileDropComponent: React.FC<{
                 📁
                 </div>
                 <div style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
-                {isDragOver ? 'Drop files here' : 'Drop files here or click to browse'}
+                {isDragOver ? 'DROP FILES HERE' : 'DROP FILES HERE OR CLICK TO BROWSE'}
                 </div>
                 <div style={{ fontSize: '14px', color: '#6c757d' }}>
-                Accepts JPG images and GLTF/GLB 3D models
+                ACCEPTS GLTF/GLB 3D MODELS
                 </div>
             </div>
             <input 
